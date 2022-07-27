@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>IOBEYA</title>
+    <script crossorigin="anonymous" src="https://kit.fontawesome.com/yourcode.js"></script>
+    <link th:href="@{webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} " th:rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Iobeya fire application</a>
+        <button aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                data-target="#navbarResponsive"
+                data-toggle="collapse" type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{~/nodes}">Categories </a>
+                </li>
+            </ul>
+        </div>
+        <form class="row g-3 " method="post" th:action="@{/nodes/search}" th:object="${node}">
+            <div class="col-auto">
+                <input class="form-control" id="searchName" placeholder="Search.." required th:field="*{name}" type="text"/>
+            </div>
+            <div class="col-auto">
+                <input class="btn btn-primary mb-3" type="submit" value="Search">
+            </div>
+        </form>
+        <form class="row g-3 " th:action="@{/logout}" method="post">
+            <div class="col-auto">
+                <input class="btn btn-primary mb-3 ml-3" type="submit" value="Logout"/>
+            </div>
+        </form>
+    </div>
+
+</nav>
+
+<div class="container scroll">
+    <div class="modal-header row justify-content-center">
+        <div>
+            <h3 th:inline="text">Welcome [[${#httpServletRequest.remoteUser}]]</h3>
+            <span >Categories list : </span>
+            <span th:text=" ${categories?.size}">kids</span>
+        </div>
+    </div>
+    <div class="modal-body container">
+        <form class="row g-3 " method="post" th:action="@{/nodes}" th:object="${node}">
+            <div class="col-auto">
+                <input class="form-control" id="name" value="${node.name}" placeholder="Enter category name" required th:field="*{name}"
+                       type="text"/>
+            </div>
+            <div class="col-auto">
+                <select class="form-control" id="parent"  th:field="*{root_id}">
+                    <option value="">Select a parent </option>
+                    <option th:each="category :${categories}"
+                            th:text="${category.name}"
+                            th:value="${category.id}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <input class="btn btn-primary mb-3" type="submit" value="create">
+            </div>
+        </form>
+
+        <ul class="list-group" th:each="category: ${categories}">
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="me-auto">
+                    <a th:href="@{~/nodes/{id}(id=${category.id})} ">
+                        <div class="fw-bold" th:text="${category.name}">category name</div>
+                    </a>
+                </div>
+                <div class="ms-1">
+                    <span class="badge bg-primary rounded-pill" th:text="${category?.childs?.size}?:0">20</span>
+                </div>
+                <div class="ms-2">
+                    <a th:href="@{~/nodes/update/{id}(id=${category.id})}">
+                        <svg class="bi bi-pencil-square" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                                  fill-rule="evenodd"/>
+                        </svg>
+                    </a>
+                    <a th:href="@{~/nodes/delete/{id}(id=${category.id})}">
+                        <svg class="bi bi-trash3" fill="currentColor" height="16" viewBox="0 0 16 16"
+                             width="16" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+
+</body>
+</html>

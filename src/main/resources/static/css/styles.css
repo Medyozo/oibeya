@@ -1,0 +1,9 @@
+.scroll {
+    max-height: 800px;
+    overflow-y: auto;
+    overflow-x: auto;
+    scrollbar-width: thin
+}
+#logout {
+  margin-left: 10px;
+}
